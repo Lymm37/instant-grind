@@ -20,13 +20,20 @@ namespace InstantGrind
         
         
 
-        // This directly overrides the visual part of grinding and will let the map point be set to the end
+        // Grinding status can be set to the end, which will then update the map
         [HarmonyPatch(typeof(ObjectBased.Stack.Stack))]
         [HarmonyPatch("UpdateOverallGrindStatus")]
         class Stack_Grind_Patch
         {
+            // Skip the grinding status update if fully ground, to prevent it from going backward
+            static bool Prefix(ref float ___overallGrindStatus)
+            {
+                return !(___overallGrindStatus == 1f);
+            }
+            // Postfix because the grind status gets set at the end
             static void Postfix(ref float ___leavesGrindStatus, ref float ___overallGrindStatus)
             {
+                // Only fully grind when right click is held
                 if (Input.GetMouseButton(1))
                 {
                     ___leavesGrindStatus = 1f;
@@ -64,8 +71,7 @@ namespace InstantGrind
         }
         */
 
-        // This sets the powder to be fully ground (probably not necessary anymore)
-        /*
+        // This sets the powder to be fully ground
         [HarmonyPatch(typeof(ObjectBased.Stack.SubstanceGrinding))]
         [HarmonyPatch("TryToGrind")]
         class Substance_Grind_Patch
@@ -73,13 +79,16 @@ namespace InstantGrind
             static void Prefix(ObjectBased.Stack.SubstanceGrinding __instance, ref float ___grindTicksPerformed, ref float ____currentGrindStatus)
             {
                 //float GrindTicksToFullGrindRef = (float)Traverse.Create(typeof(ObjectBased.Stack.SubstanceGrinding)).Field("GrindTicksToFullGrind").GetValue();
-                Debug.Log($"[Instant Grind] Setting to fully ground...");
-                ___grindTicksPerformed = GetPrivateProperty<int>(__instance, "GrindTicksToFullGrind");
-                ____currentGrindStatus = 1f;
-                Debug.Log($"[Instant Grind] Done");
+                //Debug.Log($"[Instant Grind] Setting to fully ground...");
+                if (Input.GetMouseButton(1))
+                {
+                    ___grindTicksPerformed = GetPrivateProperty<int>(__instance, "GrindTicksToFullGrind");
+                    ____currentGrindStatus = 1f;
+                }
+                //Debug.Log($"[Instant Grind] Done");
             }
         }
-        */
+        
 
         // This only makes it appear more ground, while moving a bit on the map. It also makes throwing it at the wall just delete the ingredient...
         /*
