@@ -332,3 +332,11 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+InstantGrind.sln
+Libs/0Harmony.dll
+Libs/Assembly-CSharp.dll
+Libs/BepInEx.dll
+Libs/BepInEx.Harmony.dll
+Libs/UnityEngine.CoreModule.dll
+Libs/UnityEngine.dll
+Libs/UnityEngine.InputLegacyModule.dll
